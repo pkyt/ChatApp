@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13B42" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Connection" representedClassName="Connection" syncable="YES">
+        <attribute name="nickName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="mess" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="fromWhom" inverseEntity="Message" syncable="YES"/>
+    </entity>
+    <entity name="Message" representedClassName="Message">
+        <attribute name="messDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="messID" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="ownMess" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String">
+            <userInfo/>
+        </attribute>
+        <relationship name="fromWhom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Connection" inverseName="mess" inverseEntity="Connection" syncable="YES"/>
+        <userInfo/>
+    </entity>
+    <elements>
+        <element name="Connection" positionX="36" positionY="189" width="128" height="73"/>
+        <element name="Message" positionX="261" positionY="189" width="128" height="118"/>
+    </elements>
+</model>
