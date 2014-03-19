@@ -24,6 +24,7 @@ static ChatFriendListViewController * viewFriendList;
 static NSManagedObjectContext * context;
 static NSMutableArray * requstedExistance;
 static NSString * messFriend;
+static NSArray * possibleFriends;
 
 + (ChatDelegate*)getChatDelegate{
     if (!me) {
@@ -34,6 +35,7 @@ static NSString * messFriend;
         context = [delegate managedObjectContext];
         requstedExistance = [NSMutableArray new];
         messFriend = @"";
+        possibleFriends = [NSArray new];
     }
     return me;
 }
@@ -94,6 +96,7 @@ static NSString * messFriend;
     [newMessage setText:msg];
     [newMessage setFromWhom:friend];
     [newMessage setMessDate:[NSDate date]];
+    [newMessage setSeen:[NSNumber numberWithInt:1]];
     [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
     if (![context save:&error]){
         NSLog(@"ERROR: failed adding to DB");
@@ -164,8 +167,9 @@ static NSString * messFriend;
             NSLog(@"ERROR: failed adding to DB");
         }
         friend = newFriend;
-        if (viewFriendList) {
-            [viewFriendList reload];
+        if (viewDownload) {
+            NSMutableArray * existsFriend = [self getExistsFriends:possibleFriends];
+            [viewDownload reloadViewWithFriendList:possibleFriends withExistance:existsFriend];
         }
     }else{
         friend = [existSameNickName objectAtIndex:0];
@@ -175,6 +179,7 @@ static NSString * messFriend;
     inManagedObjectContext:context];
     [newMessage setOwnMess:[NSNumber numberWithInt:1]];
     [newMessage setText:msg];
+    [newMessage setSeen:FALSE];
     [newMessage setFromWhom:friend];
     [newMessage setMessDate:[NSDate date]];
     [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
@@ -183,6 +188,9 @@ static NSString * messFriend;
     }
     if (viewMessage) {
         [viewMessage setFriend:nil];
+    }
+    if (viewFriendList) {
+        [viewFriendList reload];
     }
 }
 
@@ -198,7 +206,7 @@ static NSString * messFriend;
     return ((existSameNickName) && ([existSameNickName count] > 0));
 }
 
-- (void)recievedListOfAllPossibleFriends:(NSArray*)listOfAllPossibleFriends{
+- (NSMutableArray*)getExistsFriends:(NSArray*)listOfAllPossibleFriends{
     NSMutableArray * existsFriend = [NSMutableArray new];
     for (int i = 0; i < [listOfAllPossibleFriends count]; i++) {
         if ([self checkIfFriendAlreadyExist:[listOfAllPossibleFriends objectAtIndex:i]]) {
@@ -207,8 +215,14 @@ static NSString * messFriend;
             [existsFriend addObject:[NSNumber numberWithInt:0]];
         }
     }
+    return existsFriend;
+}
+
+- (void)recievedListOfAllPossibleFriends:(NSArray*)listOfAllPossibleFriends{
+    possibleFriends = listOfAllPossibleFriends;
     if (viewDownload) {
-        [viewDownload reloadViewWithFriendList:listOfAllPossibleFriends withExistance:existsFriend];
+        NSMutableArray * existsFriend = [self getExistsFriends:possibleFriends];
+        [viewDownload reloadViewWithFriendList:possibleFriends withExistance:existsFriend];
     }
 }
 

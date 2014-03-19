@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A7176EBD18D1B4FE00215261 /* Connection.m in Sources */ = {isa = PBXBuildFile; fileRef = A7176EBC18D1B4FE00215261 /* Connection.m */; };
-		A7176EC018D1B4FE00215261 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = A7176EBF18D1B4FE00215261 /* Message.m */; };
 		A7176EC218D1D20400215261 /* iphone-sms-4.png in Resources */ = {isa = PBXBuildFile; fileRef = A7176EC118D1D20400215261 /* iphone-sms-4.png */; };
 		A7176EC518D203E500215261 /* ChatDownloadFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7176EC418D203E500215261 /* ChatDownloadFriendViewController.m */; };
 		A7462C2518C7355A005B947F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7462C2418C7355A005B947F /* Foundation.framework */; };
@@ -28,12 +26,12 @@
 		A7462C5A18C7355A005B947F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A7462C5818C7355A005B947F /* InfoPlist.strings */; };
 		A7462C5C18C7355A005B947F /* ChatAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7462C5B18C7355A005B947F /* ChatAppTests.m */; };
 		A7462C6A18C735FE005B947F /* ChatMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7462C6918C735FE005B947F /* ChatMasterViewController.m */; };
-		A7462C8418C74FAB005B947F /* iPhone-sms-ican.png in Resources */ = {isa = PBXBuildFile; fileRef = A7462C8318C74FAB005B947F /* iPhone-sms-ican.png */; };
-		A7462C8618C753CB005B947F /* iPhone-sms-ican-left.png in Resources */ = {isa = PBXBuildFile; fileRef = A7462C8518C753CB005B947F /* iPhone-sms-ican-left.png */; };
 		A79166B118D6FE9D00E9F51E /* ChatServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A79166B018D6FE9D00E9F51E /* ChatServer.m */; };
 		A79166B418D6FEF000E9F51E /* ChatDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A79166B318D6FEF000E9F51E /* ChatDelegate.m */; };
 		A79166B918D73E6200E9F51E /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A79166B818D73E6200E9F51E /* Main_iPhone.storyboard */; };
 		A79166C818D748A900E9F51E /* ChatMessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A79166C718D748A900E9F51E /* ChatMessViewController.m */; };
+		A7DA56CD18D9CB21003FA9FD /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DA56CC18D9CB21003FA9FD /* Message.m */; };
+		A7DA56D018D9CB21003FA9FD /* Connection.m in Sources */ = {isa = PBXBuildFile; fileRef = A7DA56CF18D9CB21003FA9FD /* Connection.m */; };
 		A7DBBFD118C8CB06001F8601 /* iphone-sms-2.png in Resources */ = {isa = PBXBuildFile; fileRef = A7DBBFD018C8CB06001F8601 /* iphone-sms-2.png */; };
 		A7DBBFD318C8CC3C001F8601 /* iphone-sms-3.png in Resources */ = {isa = PBXBuildFile; fileRef = A7DBBFD218C8CC3C001F8601 /* iphone-sms-3.png */; };
 		A7F44BDB18CF16DB00BC8F3B /* ChatAddFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7F44BDA18CF16DB00BC8F3B /* ChatAddFriendViewController.m */; };
@@ -51,10 +49,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A7176EBB18D1B4FE00215261 /* Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Connection.h; sourceTree = "<group>"; };
-		A7176EBC18D1B4FE00215261 /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Connection.m; sourceTree = "<group>"; };
-		A7176EBE18D1B4FE00215261 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
-		A7176EBF18D1B4FE00215261 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		A7176EC118D1D20400215261 /* iphone-sms-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-sms-4.png"; sourceTree = "<group>"; };
 		A7176EC318D203E500215261 /* ChatDownloadFriendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatDownloadFriendViewController.h; sourceTree = "<group>"; };
 		A7176EC418D203E500215261 /* ChatDownloadFriendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatDownloadFriendViewController.m; sourceTree = "<group>"; };
@@ -79,8 +73,6 @@
 		A7462C5B18C7355A005B947F /* ChatAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatAppTests.m; sourceTree = "<group>"; };
 		A7462C6818C735FE005B947F /* ChatMasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatMasterViewController.h; sourceTree = "<group>"; };
 		A7462C6918C735FE005B947F /* ChatMasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatMasterViewController.m; sourceTree = "<group>"; };
-		A7462C8318C74FAB005B947F /* iPhone-sms-ican.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPhone-sms-ican.png"; path = "../../iPhone-sms-ican.png"; sourceTree = "<group>"; };
-		A7462C8518C753CB005B947F /* iPhone-sms-ican-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPhone-sms-ican-left.png"; path = "../../iPhone-sms-ican-left.png"; sourceTree = "<group>"; };
 		A79166AF18D6FE9D00E9F51E /* ChatServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatServer.h; sourceTree = "<group>"; };
 		A79166B018D6FE9D00E9F51E /* ChatServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatServer.m; sourceTree = "<group>"; };
 		A79166B218D6FEF000E9F51E /* ChatDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatDelegate.h; sourceTree = "<group>"; };
@@ -88,6 +80,10 @@
 		A79166B818D73E6200E9F51E /* Main_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPhone.storyboard; sourceTree = "<group>"; };
 		A79166C618D748A900E9F51E /* ChatMessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatMessViewController.h; sourceTree = "<group>"; };
 		A79166C718D748A900E9F51E /* ChatMessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatMessViewController.m; sourceTree = "<group>"; };
+		A7DA56CB18D9CB21003FA9FD /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		A7DA56CC18D9CB21003FA9FD /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		A7DA56CE18D9CB21003FA9FD /* Connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Connection.h; sourceTree = "<group>"; };
+		A7DA56CF18D9CB21003FA9FD /* Connection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Connection.m; sourceTree = "<group>"; };
 		A7DBBFD018C8CB06001F8601 /* iphone-sms-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-sms-2.png"; sourceTree = "<group>"; };
 		A7DBBFD218C8CC3C001F8601 /* iphone-sms-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iphone-sms-3.png"; sourceTree = "<group>"; };
 		A7F44BD918CF16DB00BC8F3B /* ChatAddFriendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatAddFriendViewController.h; sourceTree = "<group>"; };
@@ -166,17 +162,15 @@
 				A7176EC118D1D20400215261 /* iphone-sms-4.png */,
 				A7DBBFD218C8CC3C001F8601 /* iphone-sms-3.png */,
 				A7DBBFD018C8CB06001F8601 /* iphone-sms-2.png */,
-				A7462C8518C753CB005B947F /* iPhone-sms-ican-left.png */,
-				A7462C8318C74FAB005B947F /* iPhone-sms-ican.png */,
 				A7462C3518C7355A005B947F /* ChatAppDelegate.h */,
 				A7462C3618C7355A005B947F /* ChatAppDelegate.m */,
 				A7462C3B18C7355A005B947F /* Main_iPad.storyboard */,
 				A7462C4718C7355A005B947F /* Images.xcassets */,
 				A7462C3E18C7355A005B947F /* ChatApp.xcdatamodeld */,
-				A7176EBE18D1B4FE00215261 /* Message.h */,
-				A7176EBF18D1B4FE00215261 /* Message.m */,
-				A7176EBB18D1B4FE00215261 /* Connection.h */,
-				A7176EBC18D1B4FE00215261 /* Connection.m */,
+				A7DA56CE18D9CB21003FA9FD /* Connection.h */,
+				A7DA56CF18D9CB21003FA9FD /* Connection.m */,
+				A7DA56CB18D9CB21003FA9FD /* Message.h */,
+				A7DA56CC18D9CB21003FA9FD /* Message.m */,
 				A7462C2D18C7355A005B947F /* Supporting Files */,
 				A7462C6818C735FE005B947F /* ChatMasterViewController.h */,
 				A7462C6918C735FE005B947F /* ChatMasterViewController.m */,
@@ -298,11 +292,9 @@
 			files = (
 				A7462C3D18C7355A005B947F /* Main_iPad.storyboard in Resources */,
 				A7462C4818C7355A005B947F /* Images.xcassets in Resources */,
-				A7462C8418C74FAB005B947F /* iPhone-sms-ican.png in Resources */,
 				A7176EC218D1D20400215261 /* iphone-sms-4.png in Resources */,
 				A7DBBFD118C8CB06001F8601 /* iphone-sms-2.png in Resources */,
 				A79166B918D73E6200E9F51E /* Main_iPhone.storyboard in Resources */,
-				A7462C8618C753CB005B947F /* iPhone-sms-ican-left.png in Resources */,
 				A7DBBFD318C8CC3C001F8601 /* iphone-sms-3.png in Resources */,
 				A7462C3118C7355A005B947F /* InfoPlist.strings in Resources */,
 			);
@@ -329,12 +321,12 @@
 				A79166C818D748A900E9F51E /* ChatMessViewController.m in Sources */,
 				A7462C4018C7355A005B947F /* ChatApp.xcdatamodeld in Sources */,
 				A7F44BE118CF6CBB00BC8F3B /* ChatFriendListViewController.m in Sources */,
-				A7176EBD18D1B4FE00215261 /* Connection.m in Sources */,
 				A7462C3718C7355A005B947F /* ChatAppDelegate.m in Sources */,
-				A7176EC018D1B4FE00215261 /* Message.m in Sources */,
 				A7176EC518D203E500215261 /* ChatDownloadFriendViewController.m in Sources */,
 				A79166B118D6FE9D00E9F51E /* ChatServer.m in Sources */,
+				A7DA56CD18D9CB21003FA9FD /* Message.m in Sources */,
 				A7462C3318C7355A005B947F /* main.m in Sources */,
+				A7DA56D018D9CB21003FA9FD /* Connection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

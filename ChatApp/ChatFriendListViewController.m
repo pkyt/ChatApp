@@ -84,15 +84,22 @@
     }
     
     Connection* friend = [self.listOfFriends objectAtIndex:indexPath.row];
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"seen == TRUE"];
+    
     cell.textLabel.text = friend.nickName;
     // Configure the cell...
-    
-    return cell;
+    NSSet * array = [friend.mess filteredSetUsingPredicate:predicate];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)([friend.mess count]-[array count])];
+     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     Connection* friend = [self.listOfFriends objectAtIndex:indexPath.row];
     [[ChatDelegate getChatDelegate] setFriendToViewMessage:friend.nickName];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [self.tableView reloadData];
 }
 
 

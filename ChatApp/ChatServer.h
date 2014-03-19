@@ -17,4 +17,5 @@
 - (void)sendMessageTo:(NSString*)nickName message:(NSString*)msg;
 - (void)getAllPossibleFriends;
 - (void)setReturnClass:(id)theClass;
+- (void)login:(NSString*)nickname;
 @end

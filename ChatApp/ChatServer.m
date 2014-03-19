@@ -42,6 +42,10 @@
     [self sendMessage:@"frd:"];
 }
 
+- (void)login:(NSString*)nickname{
+    [self sendMessage:[NSString stringWithFormat:@"was:%@", nickname]];
+}
+
 - (NSMutableArray*)convertStringToArray:(NSString*)string{
     NSMutableArray* connections = [NSMutableArray new];
     NSString* rest = string;
@@ -83,17 +87,21 @@
 - (void) hanndleResponse{
     NSLog(@"got here: %@", self.responce);
     _finishedResponce = TRUE;
-    if ([self.responce isEqualToString:@"exs:true"]) {
-        [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:TRUE];
-    }else if([self.responce isEqualToString:@"exs:false"]) {
-        [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:FALSE];
-    }else if ([[self.responce substringToIndex:4] isEqualToString:@"snd:"]){
-        long newLine = [self.responce rangeOfString:@"\n"].location;
-        NSString* fromWhom = [[self.responce substringToIndex:newLine] substringFromIndex:4];
-        NSString* msg = [self.responce substringFromIndex:newLine + 1];
-        [[ChatDelegate getChatDelegate] recievedMessageFrom:fromWhom withMessage:msg];
-    }else if ([[self.responce substringToIndex:4] isEqualToString:@"frd:"]){
-        [[ChatDelegate getChatDelegate] recievedListOfAllPossibleFriends:[self convertStringToArray:self.responce]];
+    if ([self.responce length] > 4) {
+        if ([self.responce isEqualToString:@"exs:true"]) {
+            [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:TRUE];
+        }else if([self.responce isEqualToString:@"exs:false"]) {
+            [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:FALSE];
+        }else if ([[self.responce substringToIndex:4] isEqualToString:@"snd:"]){
+            long newLine = [self.responce rangeOfString:@"\n"].location;
+            NSString* fromWhom = [[self.responce substringToIndex:newLine] substringFromIndex:4];
+            NSString* msg = [self.responce substringFromIndex:newLine + 1];
+            [[ChatDelegate getChatDelegate] recievedMessageFrom:fromWhom withMessage:msg];
+        }else if ([[self.responce substringToIndex:4] isEqualToString:@"frd:"]){
+            [[ChatDelegate getChatDelegate] recievedListOfAllPossibleFriends:[self convertStringToArray:self.responce]];
+        }else if ([self.responce isEqualToString:@"iam:failed"]){
+            [self login:@"pkyt"];
+        }
     }
 }
 

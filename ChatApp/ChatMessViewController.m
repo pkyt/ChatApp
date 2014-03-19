@@ -21,6 +21,8 @@
 
 @implementation ChatMessViewController
 
+#define dateMess 15
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -37,8 +39,11 @@
     self.navigationItem.title = self.friendsNickName;
     [self fillMessagesFromDBWithConnection:self.friendsNickName];
     [self.tableView reloadData];
-    NSIndexPath* ipath = [NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0];
-    [self.tableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+    if ([self.messages count] != 0) {
+        NSIndexPath* ipath = [NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0];
+        
+        [self.tableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+    }
 }
 
 - (void)fillMessagesFromDBWithConnection:(NSString*)friendNickName{
@@ -99,8 +104,11 @@
         frame.size.height -= keyboardSize.size.height;
         self.viewMessage.frame = frame;
     }];
-    NSIndexPath* ipath = [NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0];
-    [self.tableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+    if ([self.messages count] != 0) {
+        NSIndexPath* ipath = [NSIndexPath indexPathForRow:[self.messages count]-1 inSection:0];
+        
+        [self.tableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+    }
 }
 
 - (IBAction)endedTyping:(NSNotification*)sender{
@@ -133,6 +141,7 @@
     
     UIImageView *balloonView;
     UILabel *label;
+    UILabel *dateLabel;
     UITableViewCell *cell;
     
     if (cell == nil) {
@@ -150,11 +159,15 @@
         label.lineBreakMode = NSLineBreakByWordWrapping;
         label.font = [UIFont systemFontOfSize:14.0];
         
-        UIView *message = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, cell.frame.size.width, cell.frame.size.height)];
+        UIView *message = [[UIView alloc] initWithFrame:CGRectMake(0.0, dateMess, cell.frame.size.width, cell.frame.size.height)];
         message.tag = 0;
         [message addSubview:balloonView];
         [message addSubview:label];
         [cell.contentView addSubview:message];
+        dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(5.0, 0.0, cell.frame.size.width - 10, dateMess)];
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleHeadline];
+        [dateLabel setFont:[UIFont fontWithDescriptor:descriptor size:10]];
+        [cell.contentView addSubview:dateLabel];
         
     }
     else
@@ -164,7 +177,14 @@
     }
     
     Message* thisMsg = [self.messages objectAtIndex:indexPath.row];
+    
+    [thisMsg setSeen:[NSNumber numberWithInt:1]];
+    
     NSString *text = thisMsg.text;
+    NSError*error;
+    if (![self.context save:&error]){
+        NSLog(@"ERROR: failed adding to DB");
+    }
     
     CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:14.0] constrainedToSize:CGSizeMake(240.0f, 480.0f) lineBreakMode:NSLineBreakByWordWrapping];
     
@@ -174,14 +194,18 @@
         balloonView.frame = CGRectMake(cell.contentView.bounds.size.width - 48.0 - size.width, 2.0, size.width + 28, size.height+10);
         balloon = [[UIImage imageNamed:@"iphone-sms-3"] stretchableImageWithLeftCapWidth:25 topCapHeight:14];
         label.frame = CGRectMake(cell.contentView.bounds.size.width - 35.0 - size.width, 8, size.width + 5, size.height);
+        [dateLabel setTextAlignment:NSTextAlignmentRight];
     }else{
         balloonView.frame = CGRectMake(15.0, 2.0, size.width + 28, size.height+10);
         balloon = [[UIImage imageNamed:@"iphone-sms-4"] stretchableImageWithLeftCapWidth:25 topCapHeight:14];
         label.frame = CGRectMake(36, 8, size.width + 5, size.height);
+        [dateLabel setTextAlignment:NSTextAlignmentLeft];
     }
     
     balloonView.image = balloon;
     label.text = text;
+    NSString * date = [NSString stringWithFormat:@"%@", thisMsg.messDate];
+    dateLabel.text = [date substringToIndex:[date length]-5];
     return cell;
 }
 
@@ -190,7 +214,7 @@
     Message* thisMsg = [self.messages objectAtIndex:indexPath.row];
     NSString *body = thisMsg.text;
     CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:14.0] constrainedToSize:CGSizeMake(240.0, 480.0) lineBreakMode:NSLineBreakByWordWrapping];
-    return size.height + 15;
+    return size.height + 15 + dateMess;
 }
 
 
