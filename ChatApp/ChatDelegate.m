@@ -7,7 +7,7 @@
 //
 
 #import "ChatDelegate.h"
-#import "ChatServer.h"
+#import "ChatClient.h"
 #import "ChatMessViewController.h"
 #import "ChatDownloadFriendViewController.h"
 #import "ChatAddFriendViewController.h"
@@ -17,7 +17,7 @@
 
 @implementation ChatDelegate
 static ChatDelegate * me;
-static ChatServer * server;
+static ChatClient * server;
 static ChatMessViewController * viewMessage;
 static ChatDownloadFriendViewController * viewDownload;
 static ChatAddFriendViewController * viewAddFriend;
@@ -32,7 +32,7 @@ static NSString* currLogedIn;
 + (ChatDelegate*)getChatDelegate{
     if (!me) {
         me = [ChatDelegate new];
-        server = [ChatServer new];
+        server = [ChatClient new];
         [server initNetworkCommunication];
         ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
         context = [delegate managedObjectContext];
