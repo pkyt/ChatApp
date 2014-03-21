@@ -2,7 +2,7 @@
 //  Message.m
 //  ChatApp
 //
-//  Created by Pavlo Kytsmey on 3/19/14.
+//  Created by Pavlo Kytsmey on 3/21/14.
 //  Copyright (c) 2014 Pavlo Kytsmey. All rights reserved.
 //
 
@@ -15,8 +15,8 @@
 @dynamic messDate;
 @dynamic messID;
 @dynamic ownMess;
-@dynamic text;
 @dynamic seen;
+@dynamic text;
 @dynamic fromWhom;
 
 @end

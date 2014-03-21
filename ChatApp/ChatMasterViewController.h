@@ -12,7 +12,7 @@
 #import "Connection.h"
 #import "Message.h"
 
-@interface ChatMasterViewController : UITableViewController <NSStreamDelegate>
+@interface ChatMasterViewController : UITableViewController
 
 @property (nonatomic,strong) NSManagedObjectContext* managedObjectContext;
 

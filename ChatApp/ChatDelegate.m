@@ -13,6 +13,7 @@
 #import "ChatAddFriendViewController.h"
 #import "ChatFriendListViewController.h"
 #import "ChatAppDelegate.h"
+#import "ChatLogInViewController.h"
 
 @implementation ChatDelegate
 static ChatDelegate * me;
@@ -21,23 +22,38 @@ static ChatMessViewController * viewMessage;
 static ChatDownloadFriendViewController * viewDownload;
 static ChatAddFriendViewController * viewAddFriend;
 static ChatFriendListViewController * viewFriendList;
+static ChatLogInViewController * viewSingUp;
 static NSManagedObjectContext * context;
 static NSMutableArray * requstedExistance;
 static NSString * messFriend;
 static NSArray * possibleFriends;
+static NSString* currLogedIn;
 
 + (ChatDelegate*)getChatDelegate{
     if (!me) {
         me = [ChatDelegate new];
         server = [ChatServer new];
-        [server connectWithNickName:@"pkyt"];
+        [server initNetworkCommunication];
         ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
         context = [delegate managedObjectContext];
         requstedExistance = [NSMutableArray new];
         messFriend = @"";
+        currLogedIn = @"";
         possibleFriends = [NSArray new];
     }
     return me;
+}
+
+- (void)setCurrLogedIn:(NSString*)username{
+    currLogedIn = username;
+}
+
+- (NSString*)getCurrLog{
+    return currLogedIn;
+}
+
+- (void)setViewSingUp:(ChatLogInViewController*)view{
+    viewSingUp = view;
 }
 
 - (void)setFriendToViewMessage:(NSString *)friendConnection{
@@ -68,43 +84,45 @@ static NSArray * possibleFriends;
 }
 
 - (void)sendMessageTo:(NSString*)frdNickName withMessage:(NSString*)msg{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"Connection" inManagedObjectContext:context];
-    [fetchRequest setEntity:entity];
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", frdNickName];
-    [fetchRequest setPredicate:predicate];
-    NSError *error;
-    NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
-    BOOL existsFriend = ((existSameNickName) && ([existSameNickName count] == 0));
-    Connection * friend;
-    if (existsFriend) {
-        Connection* newFriend = [NSEntityDescription insertNewObjectForEntityForName:@"Connection"
-                                                              inManagedObjectContext:context];
-        [newFriend setNickName:frdNickName];
+    if (![@"" isEqualToString:currLogedIn]) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription
+                                       entityForName:@"Connection" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", frdNickName];
+        [fetchRequest setPredicate:predicate];
+        NSError *error;
+        NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
+        BOOL existsFriend = ((existSameNickName) && ([existSameNickName count] == 0));
+        Connection * friend;
+        if (existsFriend) {
+            Connection* newFriend = [NSEntityDescription insertNewObjectForEntityForName:@"Connection"
+                                                                  inManagedObjectContext:context];
+            [newFriend setNickName:frdNickName];
+            if (![context save:&error]){
+                NSLog(@"ERROR: failed adding to DB");
+            }
+            friend = newFriend;
+        }else{
+            friend = [existSameNickName objectAtIndex:0];
+        }
+        Message* newMessage = [NSEntityDescription
+                               insertNewObjectForEntityForName:@"Message"
+                               inManagedObjectContext:context];
+        [newMessage setOwnMess:FALSE];
+        [newMessage setText:msg];
+        [newMessage setFromWhom:friend];
+        [newMessage setMessDate:[NSDate date]];
+        [newMessage setSeen:[NSNumber numberWithInt:1]];
+        [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
         if (![context save:&error]){
             NSLog(@"ERROR: failed adding to DB");
         }
-        friend = newFriend;
-    }else{
-        friend = [existSameNickName objectAtIndex:0];
+        if (viewMessage) {
+            [viewMessage setFriend:frdNickName];
+        }
+        [server sendMessageTo:frdNickName message:msg fromNickName:currLogedIn];
     }
-    Message* newMessage = [NSEntityDescription
-                           insertNewObjectForEntityForName:@"Message"
-                           inManagedObjectContext:context];
-    [newMessage setOwnMess:FALSE];
-    [newMessage setText:msg];
-    [newMessage setFromWhom:friend];
-    [newMessage setMessDate:[NSDate date]];
-    [newMessage setSeen:[NSNumber numberWithInt:1]];
-    [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
-    if (![context save:&error]){
-        NSLog(@"ERROR: failed adding to DB");
-    }
-    if (viewMessage) {
-        [viewMessage setFriend:frdNickName];
-    }
-    [server sendMessageTo:frdNickName message:msg];
 }
 
 - (void)allFriends{
@@ -116,94 +134,109 @@ static NSArray * possibleFriends;
         if (!exists) {
             [viewAddFriend setResponce:@"User by this nickName doesn't exist"];
         }else{
-            NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-            NSEntityDescription *entity = [NSEntityDescription
-                                           entityForName:@"Connection" inManagedObjectContext:context];
-            [fetchRequest setEntity:entity];
-            NSString * nickNameLastRequested = [requstedExistance objectAtIndex:0];
-            [requstedExistance removeObjectAtIndex:0];
-            NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", nickNameLastRequested];
-            [fetchRequest setPredicate:predicate];
-            NSError *error;
-            NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
-         
-            if ((existSameNickName) && ([existSameNickName count] == 0)) {
-                Connection* newFriend = [NSEntityDescription
-                                         insertNewObjectForEntityForName:@"Connection"
-                                         inManagedObjectContext:context];
-                [newFriend setNickName:nickNameLastRequested];
-                if (![context save:&error]) {
-                    [viewAddFriend setResponce: @"ERROR: failed adding to database"];
-                }else{
-                    [viewAddFriend setResponce: @"User was successfully added"];
-                    if (viewFriendList) { // new friend was added, so it should appear in friend list
-                        [viewFriendList reload];
+            if (![currLogedIn isEqualToString:@""]) {
+                NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+                NSEntityDescription *entity = [NSEntityDescription
+                                               entityForName:@"Connection" inManagedObjectContext:context];
+                [fetchRequest setEntity:entity];
+                NSString * nickNameLastRequested = [requstedExistance objectAtIndex:0];
+                [requstedExistance removeObjectAtIndex:0];
+                NSPredicate* predicate = [NSPredicate predicateWithFormat:@"(nickName == %@) AND (myNickName == %@)", nickNameLastRequested, currLogedIn];
+                [fetchRequest setPredicate:predicate];
+                NSError *error;
+                NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
+                
+                if ((existSameNickName) && ([existSameNickName count] == 0)) {
+                    if (![currLogedIn isEqualToString:@""]) {
+                        Connection* newFriend = [NSEntityDescription
+                                                 insertNewObjectForEntityForName:@"Connection"
+                                                 inManagedObjectContext:context];
+                        [newFriend setNickName:nickNameLastRequested];
+                        [newFriend setMyNickName:currLogedIn];
+                        if (![context save:&error]) {
+                            [viewAddFriend setResponce: @"ERROR: failed adding to database"];
+                        }else{
+                            [viewAddFriend setResponce: @"User was successfully added"];
+                            if (viewFriendList) { // new friend was added, so it should appear in friend list
+                                [viewFriendList reload];
+                            }
+                        }
                     }
+                    
+                }else{
+                    [viewAddFriend setResponce: @"friend alredy exist"];
                 }
             }else{
-                [viewAddFriend setResponce: @"friend alredy exist"];
+                [viewAddFriend setResponce: @"you have to log in first before adding a friend"];
             }
+            
          }
     }
 }
 
 - (void)recievedMessageFrom:(NSString*)friendNickName withMessage:(NSString *)msg{
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription
-    entityForName:@"Connection" inManagedObjectContext:context];
-    [fetchRequest setEntity:entity];
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", friendNickName];
-    [fetchRequest setPredicate:predicate];
-    NSError *error;
-    NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
-    BOOL existsFriend = ((existSameNickName) && ([existSameNickName count] == 0));
-    Connection * friend;
-    if (existsFriend) {
-        Connection* newFriend = [NSEntityDescription insertNewObjectForEntityForName:@"Connection"
-                                                              inManagedObjectContext:context];
-        [newFriend setNickName:friendNickName];
+    if (![@"" isEqualToString:currLogedIn]) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription
+                                       entityForName:@"Connection" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"(nickName == %@) AND (myNickName == %@)", friendNickName, currLogedIn];
+        [fetchRequest setPredicate:predicate];
+        NSError *error;
+        NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
+        BOOL existsFriend = ((existSameNickName) && ([existSameNickName count] == 0));
+        Connection * friend;
+        if (existsFriend) {
+            Connection* newFriend = [NSEntityDescription insertNewObjectForEntityForName:@"Connection"
+                                                                  inManagedObjectContext:context];
+            [newFriend setNickName:friendNickName];
+            [newFriend setMyNickName:currLogedIn];
+            if (![context save:&error]){
+                NSLog(@"ERROR: failed adding to DB");
+            }
+            friend = newFriend;
+            if (viewDownload) {
+                NSMutableArray * existsFriend = [self getExistsFriends:possibleFriends];
+                [viewDownload reloadViewWithFriendList:possibleFriends withExistance:existsFriend];
+            }
+        }else{
+            friend = [existSameNickName objectAtIndex:0];
+        }
+        Message* newMessage = [NSEntityDescription
+                               insertNewObjectForEntityForName:@"Message"
+                               inManagedObjectContext:context];
+        [newMessage setOwnMess:[NSNumber numberWithInt:1]];
+        [newMessage setText:msg];
+        [newMessage setSeen:FALSE];
+        [newMessage setFromWhom:friend];
+        [newMessage setMessDate:[NSDate date]];
+        [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
         if (![context save:&error]){
             NSLog(@"ERROR: failed adding to DB");
         }
-        friend = newFriend;
-        if (viewDownload) {
-            NSMutableArray * existsFriend = [self getExistsFriends:possibleFriends];
-            [viewDownload reloadViewWithFriendList:possibleFriends withExistance:existsFriend];
+        if (viewMessage) {
+            [viewMessage setFriend:nil];
         }
-    }else{
-        friend = [existSameNickName objectAtIndex:0];
-    }
-    Message* newMessage = [NSEntityDescription
-    insertNewObjectForEntityForName:@"Message"
-    inManagedObjectContext:context];
-    [newMessage setOwnMess:[NSNumber numberWithInt:1]];
-    [newMessage setText:msg];
-    [newMessage setSeen:FALSE];
-    [newMessage setFromWhom:friend];
-    [newMessage setMessDate:[NSDate date]];
-    [newMessage setMessID:[NSNumber numberWithLong:[friend.mess count]]];
-    if (![context save:&error]){
-        NSLog(@"ERROR: failed adding to DB");
-    }
-    if (viewMessage) {
-        [viewMessage setFriend:nil];
-    }
-    if (viewFriendList) {
-        [viewFriendList reload];
+        if (viewFriendList) {
+            [viewFriendList reload];
+        }
     }
 }
 
 - (BOOL)checkIfFriendAlreadyExist:(NSString *)friendNickName{
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"Connection" inManagedObjectContext:context];
-    [fetchRequest setEntity:entity];
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", friendNickName];
-    [fetchRequest setPredicate:predicate];
-    NSError *error;
-    NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
-    return ((existSameNickName) && ([existSameNickName count] > 0));
+    if (![currLogedIn isEqualToString:@""]) {
+        NSEntityDescription *entity = [NSEntityDescription
+                                       entityForName:@"Connection" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"(nickName == %@) AND (myNickName == %@)", friendNickName, currLogedIn];
+        [fetchRequest setPredicate:predicate];
+        NSError *error;
+        NSArray* existSameNickName = [context executeFetchRequest:fetchRequest error:&error];
+        return ((existSameNickName) && ([existSameNickName count] > 0));
+    }
+    return FALSE;
 }
 
 - (NSMutableArray*)getExistsFriends:(NSArray*)listOfAllPossibleFriends{
@@ -226,5 +259,37 @@ static NSArray * possibleFriends;
     }
 }
 
+- (void)registerMe:(NSString*)nickname withPassword:(NSString*)pass{
+    [server registerWithNickName:nickname withPassword:pass];
+}
+
+- (void)logout:(NSString *)nickname{
+    NSLog(@"asdfadsfsd: %@", nickname);
+    [server logout:nickname];
+}
+
+- (void)login:(NSString*)nickname withPassword:(NSString*)pass{
+    [server login:nickname withPassword:pass];
+}
+
+- (void)registerReturn:(NSString*)msg withSuccess:(BOOL)success{
+    // add new user
+    
+    if (viewSingUp) {
+        [viewSingUp registerReturn:msg withSuccess:success];
+    }
+}
+
+- (void)loginReturn:(NSString*)msg withSuccess:(BOOL)success{
+    // add new user if he doen't exist
+    
+    if (viewSingUp) {
+        [viewSingUp loginReturn:msg withSuccess:success];
+    }
+}
+
+- (void)logoutReturn:(BOOL)success{
+    
+}
 
 @end

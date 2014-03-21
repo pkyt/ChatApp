@@ -14,7 +14,7 @@
 - (void)sendMessage:(NSString*)msg;
 @property NSString* responce;
 @property _Bool finishedResponce;
-@property NSString*nickName;
+
 @property (nonatomic)  id returnClass;
 
 @end
@@ -34,17 +34,14 @@
     [self sendMessage:[NSString stringWithFormat:@"exs:%@", nickName]];
 }
 
-- (void) sendMessageTo:(NSString*)nickName message:(NSString*)msg{
-    [self sendMessage:[NSString stringWithFormat:@"snd:%@\n%@\n%@", _nickName, nickName, msg]];
+- (void) sendMessageTo:(NSString*)nickName message:(NSString*)msg fromNickName:(NSString*)username{
+    [self sendMessage:[NSString stringWithFormat:@"snd:%@\n%@\n%@", username, nickName, msg]];
 }
 
 - (void) getAllPossibleFriends{
     [self sendMessage:@"frd:"];
 }
 
-- (void)login:(NSString*)nickname{
-    [self sendMessage:[NSString stringWithFormat:@"was:%@", nickname]];
-}
 
 - (NSMutableArray*)convertStringToArray:(NSString*)string{
     NSMutableArray* connections = [NSMutableArray new];
@@ -81,8 +78,10 @@
     [_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [_inputStream open];
     [_outputStream open];
-    [self sendMessage:[NSString stringWithFormat:@"Iam:%@", self.nickName]];
+    _finishedResponce = TRUE;
 }
+
+#define COMMANDLENGTH 4
 
 - (void) hanndleResponse{
     NSLog(@"got here: %@", self.responce);
@@ -99,8 +98,22 @@
             [[ChatDelegate getChatDelegate] recievedMessageFrom:fromWhom withMessage:msg];
         }else if ([[self.responce substringToIndex:4] isEqualToString:@"frd:"]){
             [[ChatDelegate getChatDelegate] recievedListOfAllPossibleFriends:[self convertStringToArray:self.responce]];
-        }else if ([self.responce isEqualToString:@"iam:failed"]){
-            [self login:@"pkyt"];
+        }else if ([[self.responce substringToIndex:4] isEqualToString:@"lin:"]){
+            NSString* rest = [self.responce substringFromIndex:4];
+            if ([rest isEqualToString:@"success login"]) {
+                [[ChatDelegate getChatDelegate] registerReturn:@"You've been successfully loged in" withSuccess:YES];
+            }else{
+                [[ChatDelegate getChatDelegate] registerReturn:rest withSuccess:NO];
+            }
+        }else if ([[self.responce substringToIndex:4] isEqualToString:@"reg:"]){
+            NSString* rest = [self.responce substringFromIndex:4];
+            if ([rest isEqualToString:@"success registation"]) {
+                [[ChatDelegate getChatDelegate] registerReturn:@"You've been successfully registred" withSuccess:YES];
+            }else{
+                [[ChatDelegate getChatDelegate] registerReturn:rest withSuccess:NO];
+            }
+        }else if([self.responce isEqualToString:@"done"]) {
+            [[ChatDelegate getChatDelegate] logoutReturn:YES];
         }
     }
 }
@@ -128,7 +141,9 @@
                     if (len > 0) {
                         
                         NSString *output = [[NSString alloc] initWithBytes:buffer length:len encoding:NSASCIIStringEncoding];
-                        self.responce = [self.responce stringByAppendingString:output];
+                        if (output != NULL) {
+                            self.responce = [self.responce stringByAppendingString:output];
+                        }
                     }
                 }
             }
@@ -152,11 +167,20 @@
     self.returnClass = theClass;
 }
 
-- (void)connectWithNickName:(NSString *)nn{
-    _nickName = nn;
-    _finishedResponce = TRUE;
-    [self initNetworkCommunication];
+- (void)registerWithNickName:(NSString *)nn withPassword:(NSString *)pass{
     NSLog(@"we are connecting");
+    [self sendMessage:[NSString stringWithFormat:@"Iam:%@\n%@", nn, pass]];
+}
+
+
+- (void)login:(NSString*)nickname withPassword:(NSString *)pass{
+
+    [self sendMessage:[NSString stringWithFormat:@"was:%@\n%@", nickname, pass]];
+}
+
+- (void)logout:(NSString*)nickname{
+    NSLog(@"asdfadsfsd: %@", nickname);
+    [self sendMessage:[NSString stringWithFormat:@"out:%@", nickname]];
 }
 
 @end

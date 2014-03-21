@@ -2,7 +2,7 @@
 //  Connection.h
 //  ChatApp
 //
-//  Created by Pavlo Kytsmey on 3/19/14.
+//  Created by Pavlo Kytsmey on 3/21/14.
 //  Copyright (c) 2014 Pavlo Kytsmey. All rights reserved.
 //
 
@@ -14,6 +14,7 @@
 @interface Connection : NSManagedObject
 
 @property (nonatomic, retain) NSString * nickName;
+@property (nonatomic, retain) NSString * myNickName;
 @property (nonatomic, retain) NSSet *mess;
 @end
 

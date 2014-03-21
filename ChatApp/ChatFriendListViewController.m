@@ -30,11 +30,18 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
     _managedObjectContext = delegate.managedObjectContext;
-    NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"Connection" inManagedObjectContext:_managedObjectContext];
-    [fetchRequest setEntity:entity];
-    NSError *error;
-    _listOfFriends = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSString* currLog = [[ChatDelegate getChatDelegate] getCurrLog];
+    if ([currLog isEqualToString:@""]) {
+        _listOfFriends = [NSArray new];
+    }else{
+        NSEntityDescription *entity = [NSEntityDescription
+                                       entityForName:@"Connection" inManagedObjectContext:_managedObjectContext];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"myNickName == %@", currLog];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:predicate];
+        NSError *error;
+        _listOfFriends = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    }
 }
 
 - (id)initWithStyle:(UITableViewStyle)style

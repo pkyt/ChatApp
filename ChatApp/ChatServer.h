@@ -12,10 +12,12 @@
 
 @property NSInputStream *inputStream;
 @property NSOutputStream *outputStream;
-- (void)connectWithNickName:(NSString *)nn;
+- (void)registerWithNickName:(NSString *)nn withPassword:(NSString*)pass;
 - (void)doesFriendExistWithNickName:(NSString *)nickName;
-- (void)sendMessageTo:(NSString*)nickName message:(NSString*)msg;
+- (void)sendMessageTo:(NSString*)nickName message:(NSString*)msg fromNickName:(NSString*)username;
 - (void)getAllPossibleFriends;
 - (void)setReturnClass:(id)theClass;
-- (void)login:(NSString*)nickname;
+- (void)login:(NSString*)nickname withPassword:(NSString*)pass;
+- (void)logout:(NSString*)nickname;
+- (void)initNetworkCommunication;
 @end

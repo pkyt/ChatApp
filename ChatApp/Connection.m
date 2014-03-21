@@ -2,7 +2,7 @@
 //  Connection.m
 //  ChatApp
 //
-//  Created by Pavlo Kytsmey on 3/19/14.
+//  Created by Pavlo Kytsmey on 3/21/14.
 //  Copyright (c) 2014 Pavlo Kytsmey. All rights reserved.
 //
 
@@ -13,6 +13,7 @@
 @implementation Connection
 
 @dynamic nickName;
+@dynamic myNickName;
 @dynamic mess;
 
 @end

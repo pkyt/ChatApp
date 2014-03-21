@@ -89,16 +89,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([[NSNumber numberWithInt:0] isEqualToNumber:[_connectionsAdded objectAtIndex:indexPath.row]]) {
-        Connection* newFriend = [NSEntityDescription
-                                 insertNewObjectForEntityForName:@"Connection"
-                                 inManagedObjectContext:self.context];
-        [newFriend setNickName:[self.connections objectAtIndex:indexPath.row]];
-        NSError* error;
-        if (![self.context save:&error]){
-            NSLog(@"ERROR: failed adding to DB");
+        NSString* currLog = [[ChatDelegate getChatDelegate] getCurrLog];
+        if (![@"" isEqualToString:currLog]) {
+            Connection* newFriend = [NSEntityDescription
+                                     insertNewObjectForEntityForName:@"Connection"
+                                     inManagedObjectContext:self.context];
+            [newFriend setNickName:[self.connections objectAtIndex:indexPath.row]];
+            [newFriend setMyNickName:currLog];
+            NSError* error;
+            if (![self.context save:&error]){
+                NSLog(@"ERROR: failed adding to DB");
+            }
+            [self.connectionsAdded replaceObjectAtIndex:indexPath.row withObject:[NSNumber numberWithInt:1]];
+            [tableView reloadData];
         }
-        [self.connectionsAdded replaceObjectAtIndex:indexPath.row withObject:[NSNumber numberWithInt:1]];
-        [tableView reloadData];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
