@@ -7,8 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+@class ChatDBOperand;
+@class ChatDelegate;
 
 @interface ChatClient : NSObject <NSStreamDelegate>
++ (ChatClient*)getChatClient;
+
 
 @property NSInputStream *inputStream;
 @property NSOutputStream *outputStream;

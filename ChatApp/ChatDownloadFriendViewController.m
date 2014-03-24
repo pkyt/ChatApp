@@ -10,6 +10,7 @@
 #import "ChatAppDelegate.h"
 #import "Connection.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
 
 @interface ChatDownloadFriendViewController ()
 @property NSArray* connections;
@@ -19,9 +20,9 @@
 
 @implementation ChatDownloadFriendViewController
 
-- (void)reloadViewWithFriendList:(NSArray *)friendsNickNames withExistance:(NSMutableArray *)existance{
+- (void)reloadViewWithFriendList:(NSArray *)friendsNickNames{
     _connections = friendsNickNames;
-    _connectionsAdded = existance;
+    _connectionsAdded = [[ChatDBOperand getDBOperand] getExistsFriends:_connections];
     [self.tableView reloadData];
 }
 
@@ -42,7 +43,7 @@
     ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
     _context = [delegate managedObjectContext];
     [[ChatDelegate getChatDelegate] setViewDownload:self];
-    [[ChatDelegate getChatDelegate] allFriends];
+    [[ChatDBOperand getDBOperand] allFriends];
 }
 
 - (void)didReceiveMemoryWarning
@@ -89,17 +90,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if ([[NSNumber numberWithInt:0] isEqualToNumber:[_connectionsAdded objectAtIndex:indexPath.row]]) {
-        NSString* currLog = [[ChatDelegate getChatDelegate] getCurrLog];
+        ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        NSString* currLog = delegate.currLoged;
         if (![@"" isEqualToString:currLog]) {
-            Connection* newFriend = [NSEntityDescription
-                                     insertNewObjectForEntityForName:@"Connection"
-                                     inManagedObjectContext:self.context];
-            [newFriend setNickName:[self.connections objectAtIndex:indexPath.row]];
-            [newFriend setMyNickName:currLog];
-            NSError* error;
-            if (![self.context save:&error]){
-                NSLog(@"ERROR: failed adding to DB");
-            }
+            [[ChatDBOperand getDBOperand] addConnectionWithOfUser:currLog withFriend:[self.connections objectAtIndex:indexPath.row]];
             [self.connectionsAdded replaceObjectAtIndex:indexPath.row withObject:[NSNumber numberWithInt:1]];
             [tableView reloadData];
         }

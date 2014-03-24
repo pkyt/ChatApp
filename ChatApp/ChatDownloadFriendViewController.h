@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ChatDownloadFriendViewController : UITableViewController
-- (void)reloadViewWithFriendList:(NSArray *)friendsNickNames withExistance:(NSArray*)existance;
+- (void)reloadViewWithFriendList:(NSArray *)friendsNickNames;
 @end

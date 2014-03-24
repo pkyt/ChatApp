@@ -25,18 +25,10 @@
 - (void)setViewAddFriend:(ChatAddFriendViewController*)view;
 - (void)setViewFriendList:(ChatFriendListViewController*)view;
 - (void)setViewSingUp:(ChatLogInViewController*)view;
-- (void)existanceOfFriend:(NSString*)nickName;
-- (void)sendMessageTo:(NSString*)frdNickName withMessage:(NSString*)msg;
-- (void)allFriends;
-- (void)setFriendToViewMessage:(NSString*)friendConnection;
-- (void)registerMe:(NSString*)nickname withPassword:(NSString*)pass;
-- (void)logout:(NSString*)nickname;
-- (void)login:(NSString*)nickname withPassword:(NSString*)pass;
 - (void)registerReturn:(NSString*)msg withSuccess:(BOOL)success;
 - (void)loginReturn:(NSString*)msg withSuccess:(BOOL)success;
 - (void)logoutReturn:(BOOL)success;
 - (void)setCurrLogedIn:(NSString*)username;
-- (NSString*)getCurrLog;
 
 - (void)recievedExistanceOfFriend:(BOOL)exists;
 - (void)recievedMessageFrom:(NSString*)friendNickName withMessage:(NSString *)msg;

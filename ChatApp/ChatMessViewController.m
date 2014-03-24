@@ -10,6 +10,7 @@
 #import "Message.h"
 #import "ChatAppDelegate.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
 
 @interface ChatMessViewController ()
 
@@ -32,10 +33,13 @@
     return self;
 }
 
-- (void)setFriend:(NSString *)messFriend{
-    if (messFriend != nil) {
-        _friendsNickName = messFriend;
-    }
+- (void)newMessageAppeardFrom:(NSString*)nickname withMessage:(NSString*)msg{
+    
+}
+
+- (void)reload{
+    ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+    _friendsNickName = delegate.talkingTo;
     self.navigationItem.title = self.friendsNickName;
     [self fillMessagesFromDBWithConnection:self.friendsNickName];
     [self.tableView reloadData];
@@ -52,7 +56,6 @@
                                    entityForName:@"Connection" inManagedObjectContext:self.context];
     [fetchRequest setEntity:entity];
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"nickName == %@", friendNickName];
-    [fetchRequest setPredicate:predicate];
     [fetchRequest setPredicate:predicate];
     NSError *error;
     NSArray* friendConnect = [self.context executeFetchRequest:fetchRequest error:&error];
@@ -86,7 +89,7 @@
 
 - (IBAction)sendMessage:(NSNotification*)sender {
     if (![self.messgeField.text isEqualToString:@""]) {
-        [[ChatDelegate getChatDelegate] sendMessageTo:self.friendsNickName withMessage:self.messgeField.text];
+        [[ChatDBOperand getDBOperand] sendMessageTo:self.friendsNickName withMessage:self.messgeField.text];
         self.messgeField.text = @"";
     }
 }
@@ -215,6 +218,10 @@
     NSString *body = thisMsg.text;
     CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:14.0] constrainedToSize:CGSizeMake(240.0, 480.0) lineBreakMode:NSLineBreakByWordWrapping];
     return size.height + 15 + dateMess;
+}
+
+- (void)newMessageAppeard{
+    
 }
 
 

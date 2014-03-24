@@ -13,5 +13,5 @@
 @property (weak, nonatomic) IBOutlet UITextField *nickNameField;
 @property (weak, nonatomic) IBOutlet UILabel *infoLabel;
 - (IBAction)AddToFriendList:(id)sender;
-- (void) setResponce:(NSString*)exists;
+- (void) setResponce:(BOOL)exists;
 @end

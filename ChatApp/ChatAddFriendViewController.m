@@ -10,6 +10,7 @@
 #import "Connection.h"
 #import "ChatAppDelegate.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
 
 
 @interface ChatAddFriendViewController ()
@@ -35,12 +36,26 @@
     if ([@"" isEqualToString:self.nickNameField.text]) {
         self.infoLabel.text = @"Nickname should contain at least one character";
     }else{
-        [[ChatDelegate getChatDelegate] existanceOfFriend:self.nickNameField.text];
+        _requestedNickName = self.nickNameField.text;
+        [[ChatDBOperand getDBOperand] existanceOfFriend:self.nickNameField.text];
     }
 }
 
-- (void) setResponce:(NSString*)exists{
-    self.infoLabel.text = exists;
+- (void) setResponce:(BOOL)exists{
+    if (!exists) {
+        self.infoLabel.text = @"NickName doesn't exist";
+    }else{
+        ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        if ([delegate.currLoged isEqualToString:@""]){
+            self.infoLabel.text = @"Log in first";
+        }else{
+            if ([[ChatDBOperand getDBOperand] addConnectionWithOfUser:delegate.currLoged withFriend:self.requestedNickName]) {
+                self.infoLabel.text = @"Friend was successfully added";
+            }else{
+                self.infoLabel.text = @"Friend already exists";
+            }
+        }
+    }
 }
 
 

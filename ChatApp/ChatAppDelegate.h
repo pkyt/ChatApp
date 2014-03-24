@@ -19,4 +19,7 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
+@property NSString * currLoged;
+@property NSString * talkingTo;
+
 @end

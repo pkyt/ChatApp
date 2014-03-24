@@ -11,6 +11,7 @@
 #import "Connection.h"
 #import "ChatMasterViewController.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
 
 @interface ChatFriendListViewController ()
 
@@ -22,27 +23,11 @@
 @implementation ChatFriendListViewController
 
 - (void)reload{
-    [self getFriends];
+    _listOfFriends = [[ChatDBOperand getDBOperand] getFriends];
     [self.tableView reloadData];
 }
 
-- (void)getFriends{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
-    _managedObjectContext = delegate.managedObjectContext;
-    NSString* currLog = [[ChatDelegate getChatDelegate] getCurrLog];
-    if ([currLog isEqualToString:@""]) {
-        _listOfFriends = [NSArray new];
-    }else{
-        NSEntityDescription *entity = [NSEntityDescription
-                                       entityForName:@"Connection" inManagedObjectContext:_managedObjectContext];
-        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"myNickName == %@", currLog];
-        [fetchRequest setEntity:entity];
-        [fetchRequest setPredicate:predicate];
-        NSError *error;
-        _listOfFriends = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    }
-}
+
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -57,7 +42,7 @@
 {
     [super viewDidLoad];
     [[ChatDelegate getChatDelegate] setViewFriendList:self];
-    [self getFriends];
+    _listOfFriends = [[ChatDBOperand getDBOperand] getFriends];
 }
 
 - (void)didReceiveMemoryWarning
@@ -102,7 +87,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     Connection* friend = [self.listOfFriends objectAtIndex:indexPath.row];
-    [[ChatDelegate getChatDelegate] setFriendToViewMessage:friend.nickName];
+    ChatAppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+    delegate.talkingTo = friend.nickName;
 }
 
 - (void)viewWillAppear:(BOOL)animated{

@@ -8,6 +8,8 @@
 
 #import "ChatLogInViewController.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
+#import "ChatAppDelegate.h"
 
 @interface ChatLogInViewController ()
 @property NSString* requestedNickName;
@@ -32,7 +34,8 @@
     [super viewDidLoad];
     _needsLogIn = 0;
     [[ChatDelegate getChatDelegate] setViewSingUp:self];
-    self.logedInUserName.text = [[ChatDelegate getChatDelegate] getCurrLog];
+    ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+    self.logedInUserName.text = delegate.currLoged;
 	// Do any additional setup after loading the view.
 }
 
@@ -54,7 +57,7 @@
             self.needsLogIn = 2;
             [self logout:nil];
         }else{
-                    [[ChatDelegate getChatDelegate] login:self.usernameField.text withPassword:self.passwordField.text];
+                    [[ChatDBOperand getDBOperand] login:self.usernameField.text withPassword:self.passwordField.text];
         }
     }
 }
@@ -71,7 +74,7 @@
             [self logout:nil];
             
         }else{
-            [[ChatDelegate getChatDelegate] registerMe:self.usernameField.text withPassword:self.passwordField.text];
+            [[ChatDBOperand getDBOperand] registerMe:self.usernameField.text withPassword:self.passwordField.text];
         }
     }
 }
@@ -81,8 +84,9 @@
     if (![@"" isEqualToString:self.logedInUserName.text]) {
         NSString*logOutNickName = self.logedInUserName.text;
         self.logedInUserName.text = @"";
-        [[ChatDelegate getChatDelegate] setCurrLogedIn:self.logedInUserName.text];
-        [[ChatDelegate getChatDelegate] logout:logOutNickName];
+        ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        delegate.currLoged = self.logedInUserName.text;
+        [[ChatDBOperand getDBOperand] logout:logOutNickName];
     }else{
         self.info.text = @"You're not loged into any username";
     }
@@ -92,7 +96,8 @@
     self.info.text = msg;
     if (success) {
         self.logedInUserName.text = self.requestedNickName;
-        [[ChatDelegate getChatDelegate] setCurrLogedIn:self.logedInUserName.text];
+        ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        delegate.currLoged = self.requestedNickName;
     }
 }
 
@@ -100,7 +105,8 @@
     self.info.text = msg;
     if (success) {
         self.logedInUserName.text = self.requestedNickName;
-        [[ChatDelegate getChatDelegate] setCurrLogedIn:self.logedInUserName.text];
+        ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
+        delegate.currLoged = self.requestedNickName;
     }
 }
 

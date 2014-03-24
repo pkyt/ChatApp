@@ -8,6 +8,7 @@
 
 #import "ChatClient.h"
 #import "ChatDelegate.h"
+#import "ChatDBOperand.h"
 
 @interface ChatClient()
 
@@ -20,9 +21,21 @@
 @end
 
 @implementation ChatClient
-
+static ChatClient * me;
+static ChatDBOperand * db;
+static ChatDelegate * delegate;
+static NSString * currLog;
 @synthesize inputStream = _inputStream;
 @synthesize outputStream = _outputStream;
+
++ (ChatClient*)getChatClient{
+    if (!me) {
+        me = [ChatClient new];
+        currLog = @"";
+        [me initNetworkCommunication];
+    }
+    return me;
+}
 
 - (void)sendMessage:(NSString *)msg{
     NSData *data = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
@@ -86,27 +99,27 @@
 - (void) hanndleResponse{
     NSLog(@"got here: %@", self.responce);
     _finishedResponce = TRUE;
-    if ([self.responce length] > 4) {
+    if ([self.responce length] > COMMANDLENGTH) {
         if ([self.responce isEqualToString:@"exs:true"]) {
             [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:TRUE];
         }else if([self.responce isEqualToString:@"exs:false"]) {
             [[ChatDelegate getChatDelegate] recievedExistanceOfFriend:FALSE];
-        }else if ([[self.responce substringToIndex:4] isEqualToString:@"snd:"]){
+        }else if ([[self.responce substringToIndex:COMMANDLENGTH] isEqualToString:@"snd:"]){
             long newLine = [self.responce rangeOfString:@"\n"].location;
-            NSString* fromWhom = [[self.responce substringToIndex:newLine] substringFromIndex:4];
+            NSString* fromWhom = [[self.responce substringToIndex:newLine] substringFromIndex:COMMANDLENGTH];
             NSString* msg = [self.responce substringFromIndex:newLine + 1];
             [[ChatDelegate getChatDelegate] recievedMessageFrom:fromWhom withMessage:msg];
-        }else if ([[self.responce substringToIndex:4] isEqualToString:@"frd:"]){
+        }else if ([[self.responce substringToIndex:COMMANDLENGTH] isEqualToString:@"frd:"]){
             [[ChatDelegate getChatDelegate] recievedListOfAllPossibleFriends:[self convertStringToArray:self.responce]];
-        }else if ([[self.responce substringToIndex:4] isEqualToString:@"lin:"]){
-            NSString* rest = [self.responce substringFromIndex:4];
+        }else if ([[self.responce substringToIndex:COMMANDLENGTH] isEqualToString:@"lin:"]){
+            NSString* rest = [self.responce substringFromIndex:COMMANDLENGTH];
             if ([rest isEqualToString:@"success login"]) {
                 [[ChatDelegate getChatDelegate] registerReturn:@"You've been successfully loged in" withSuccess:YES];
             }else{
                 [[ChatDelegate getChatDelegate] registerReturn:rest withSuccess:NO];
             }
-        }else if ([[self.responce substringToIndex:4] isEqualToString:@"reg:"]){
-            NSString* rest = [self.responce substringFromIndex:4];
+        }else if ([[self.responce substringToIndex:COMMANDLENGTH] isEqualToString:@"reg:"]){
+            NSString* rest = [self.responce substringFromIndex:COMMANDLENGTH];
             if ([rest isEqualToString:@"success registation"]) {
                 [[ChatDelegate getChatDelegate] registerReturn:@"You've been successfully registred" withSuccess:YES];
             }else{

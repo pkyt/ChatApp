@@ -18,5 +18,6 @@
 - (IBAction)sendMessage:(id)sender;
 - (IBAction)startedTyping:(NSNotification*)sender;
 - (IBAction)endedTyping:(NSNotification*)sender;
-- (void)setFriend:(NSString*)messFriend;
+- (void)reload;
+- (void)newMessageAppeardFrom:(NSString*)nickname withMessage:(NSString*)msg;
 @end

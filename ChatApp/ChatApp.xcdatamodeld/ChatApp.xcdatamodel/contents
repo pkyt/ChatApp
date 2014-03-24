@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13C64" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Connection" representedClassName="Connection" syncable="YES">
+        <attribute name="myNickName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nickName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="mess" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="fromWhom" inverseEntity="Message" syncable="YES"/>
     </entity>
@@ -16,7 +17,7 @@
         <userInfo/>
     </entity>
     <elements>
-        <element name="Connection" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Message" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Connection" positionX="0" positionY="0" width="128" height="88"/>
+        <element name="Message" positionX="259" positionY="-54" width="128" height="135"/>
     </elements>
 </model>
