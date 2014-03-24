@@ -33,10 +33,6 @@
     return self;
 }
 
-- (void)newMessageAppeardFrom:(NSString*)nickname withMessage:(NSString*)msg{
-    
-}
-
 - (void)reload{
     ChatAppDelegate* delegate = [[UIApplication sharedApplication] delegate];
     _friendsNickName = delegate.talkingTo;
@@ -91,6 +87,7 @@
     if (![self.messgeField.text isEqualToString:@""]) {
         [[ChatDBOperand getDBOperand] sendMessageTo:self.friendsNickName withMessage:self.messgeField.text];
         self.messgeField.text = @"";
+        [self reload];
     }
 }
 
@@ -220,9 +217,6 @@
     return size.height + 15 + dateMess;
 }
 
-- (void)newMessageAppeard{
-    
-}
 
 
 @end

@@ -19,5 +19,4 @@
 - (IBAction)startedTyping:(NSNotification*)sender;
 - (IBAction)endedTyping:(NSNotification*)sender;
 - (void)reload;
-- (void)newMessageAppeardFrom:(NSString*)nickname withMessage:(NSString*)msg;
 @end
